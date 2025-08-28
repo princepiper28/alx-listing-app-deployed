@@ -1,4 +1,6 @@
+// interfaces/index.ts
 export interface PropertyProps {
+  id: string; // add this to keep it consistent with listings
   name: string;
   address: {
     state: string;
@@ -14,10 +16,5 @@ export interface PropertyProps {
     occupants: string;
   };
   image: string;
-  discount: string;
-}
-
-export interface ButtonProps {
-  label: string;
-  onClick: () => void;
+  discount?: number; // changed to number, optional
 }
