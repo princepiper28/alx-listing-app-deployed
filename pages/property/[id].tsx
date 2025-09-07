@@ -4,14 +4,22 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import PropertyDetail from "@/components/property/PropertyDetail";
 
+interface ApiProperty {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  imageUrl: string; // 👈 matches API
+  location: string;
+}
+
 interface Property {
   id: string;
   title: string;
   description: string;
   price: number;
-  imageUrl: string;
+  image: string; // 👈 normalized for PropertyDetail.tsx
   location: string;
-  // Add more fields as needed to match your API response
 }
 
 export default function PropertyDetailPage() {
@@ -22,23 +30,38 @@ export default function PropertyDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchProperty = async () => {
       if (!id) return;
       try {
         setLoading(true);
-        const response = await axios.get<Property>(
+        const response = await axios.get<ApiProperty>(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/properties/${id}`
         );
-        setProperty(response.data);
+
+        // ✅ Normalize API response so PropertyDetail always gets "image"
+        const normalizedProperty: Property = {
+          ...response.data,
+          image: response.data.imageUrl,
+        };
+
+        if (isMounted) {
+          setProperty(normalizedProperty);
+        }
       } catch (err) {
         console.error("Error fetching property details:", err);
-        setError("Failed to load property details.");
+        if (isMounted) setError("Failed to load property details.");
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchProperty();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   if (loading) {
@@ -55,3 +78,4 @@ export default function PropertyDetailPage() {
 
   return <PropertyDetail property={property} />;
 }
+
