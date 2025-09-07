@@ -1,22 +1,27 @@
 // components/property/PropertyDetail.tsx
+import Image from "next/image";
+
+interface Property {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  location: string;
+  image: string;
+}
+
 interface PropertyDetailProps {
-  property: {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
-    location: string;
-    image: string;
-    [key: string]: any; // allows flexibility
-  };
+  property: Property;
 }
 
 export default function PropertyDetail({ property }: PropertyDetailProps) {
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <img
+      <Image
         src={property.image}
         alt={property.title}
+        width={1200}
+        height={600}
         className="w-full h-80 object-cover rounded-2xl mb-6"
       />
       <h1 className="text-3xl font-bold mb-2">{property.title}</h1>
@@ -26,3 +31,4 @@ export default function PropertyDetail({ property }: PropertyDetailProps) {
     </div>
   );
 }
+

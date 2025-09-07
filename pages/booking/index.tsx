@@ -2,8 +2,19 @@
 import { useState } from "react";
 import axios from "axios";
 
+interface BookingFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  cardNumber: string;
+  expirationDate: string;
+  cvv: string;
+  billingAddress: string;
+}
+
 export default function BookingForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<BookingFormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -30,7 +41,7 @@ export default function BookingForm() {
     setError(null);
     setSuccess(null);
 
-    // Basic validation
+    // ✅ Basic validation
     if (!formData.firstName || !formData.lastName || !formData.email) {
       setError("Please fill all required fields.");
       setLoading(false);
@@ -38,8 +49,12 @@ export default function BookingForm() {
     }
 
     try {
-      const response = await axios.post("/api/bookings", formData);
-      if (response.status === 200) {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/bookings`,
+        formData
+      );
+
+      if (response.status === 200 || response.status === 201) {
         setSuccess("Booking confirmed!");
         setFormData({
           firstName: "",
@@ -53,6 +68,7 @@ export default function BookingForm() {
         });
       }
     } catch (err) {
+      console.error("Booking error:", err);
       setError("Failed to submit booking. Please try again.");
     } finally {
       setLoading(false);

@@ -4,10 +4,20 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import PropertyDetail from "@/components/property/PropertyDetail";
 
+interface Property {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  location: string;
+  // Add more fields as needed to match your API response
+}
+
 export default function PropertyDetailPage() {
   const router = useRouter();
   const { id } = router.query;
-  const [property, setProperty] = useState<any>(null);
+  const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +26,9 @@ export default function PropertyDetailPage() {
       if (!id) return;
       try {
         setLoading(true);
-        const response = await axios.get(`/api/properties/${id}`);
+        const response = await axios.get<Property>(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/properties/${id}`
+        );
         setProperty(response.data);
       } catch (err) {
         console.error("Error fetching property details:", err);
