@@ -1,11 +1,26 @@
-const OrderSummary: React.FC<{ bookingDetails: any }> = ({ bookingDetails }) => (
+import React from "react";
+import Image from "next/image";
+
+interface BookingDetails {
+  propertyName: string;
+  startDate: string;
+  totalNights: number;
+  bookingFee: number;
+  price: number;
+}
+
+const OrderSummary: React.FC<{ bookingDetails: BookingDetails }> = ({
+  bookingDetails,
+}) => (
   <div className="bg-white p-6 shadow-md rounded-lg">
     <h2 className="text-xl font-semibold">Review Order Details</h2>
     <div className="flex items-center mt-4">
-      <img
+      <Image
         src="https://example.com/property.jpg"
         alt="Property"
-        className="w-32 h-32 object-cover rounded-md"
+        width={128}
+        height={128}
+        className="object-cover rounded-md"
       />
       <div className="ml-4">
         <h3 className="text-lg font-semibold">{bookingDetails.propertyName}</h3>
